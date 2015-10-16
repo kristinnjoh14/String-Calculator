@@ -19,7 +19,7 @@ public class Main {
         String negatives = "";
         if (numbers.contains("//")) {
             int index = nums.toString().indexOf('\\');
-            delimiter = numbers.substring(2,index);
+            delimiter = numbers.substring(3,index -1);
             nums.delete(0,index + 2);
             while (nums.toString().contains(delimiter)) {
                 int findex = nums.indexOf(delimiter);
@@ -88,7 +88,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        String numbers = "1001";
+        String numbers = "//[swanky]\\n1swanky2swanky3";
         System.out.print(Add(numbers));
     }
 }
