@@ -6,31 +6,42 @@ import java.util.IntSummaryStatistics;
 
 public class Main {
 
-    public static int Add(String numbers) {
+    public static class NegativeException extends RuntimeException {
+        public NegativeException(String negatives) {
+            super("Negatives not allowed: " + negatives);
+        }
+    }
+
+    public static int Add(String numbers) throws NegativeException {
         StringBuffer nums = new StringBuffer(numbers);
         int sum = 0;
         String delimiter;
+        String negatives = "";
         if (numbers.contains("//")) {
             int index = nums.toString().indexOf('\\');
-            //System.out.print(index);
             delimiter = numbers.substring(2,index);
             nums.delete(0,index + 2);
-            //int index1 = 0;
             while (nums.toString().contains(delimiter)) {
                 int findex = nums.indexOf(delimiter);
                 int lindex = findex + delimiter.length();
-                sum = sum + Integer.parseInt(nums.toString().substring(0,findex));
+                int num = Integer.parseInt(nums.toString().substring(0,findex));
+                if (num < 0) {negatives = negatives + nums.toString().substring(0, findex);}
+                sum = sum + num;
                 nums.delete(0,lindex);
-                //index1 = lindex;
-               // System.out.print(sum + " " + lindex);
+            }
+            if (Integer.parseInt(nums.toString()) < 0) {negatives = negatives + nums;}
+            if (!negatives.isEmpty()) {
+                throw new NegativeException(negatives);
             }
             sum = sum + Integer.parseInt(nums.toString());
         }
         else {
-            if (numbers.length() == 0) {
-            } else if (!numbers.contains(",") && !numbers.contains("\\n")) {
+            if (numbers.length() == 0) {}
+            else if (!numbers.contains(",") && !numbers.contains("\\n")) {
+                if(Integer.parseInt(numbers) < 0) {throw new NegativeException(numbers);}
                 sum = Integer.parseInt(numbers);
-            } else if (numbers.contains(",") || numbers.contains(("\\n"))) {
+            }
+            else if (numbers.contains(",") || numbers.contains(("\\n"))) {
                 int index1 = 0;
                 while (nums.toString().contains(",") || nums.toString().contains("\\n") || index1 == -1) {
                     int index = nums.toString().indexOf(',');
@@ -39,16 +50,15 @@ public class Main {
                         index = nindex;
                         nums.deleteCharAt(index);
                     }
-
                     int num1 = Integer.parseInt(nums.substring(index1, index));
-                    //int num2 = Integer.parseInt(numbers.substring(index + 1));
+                    if (num1 < 0) { negatives = negatives + Integer.parseInt(nums.substring(index1, index)); }
                     sum = sum + num1;
-                    //System.out.print(index);
                     nums = nums.deleteCharAt(index);
                     index1 = index;
-                    //System.out.print(nums.charAt(index));
                 }
                 int num1 = Integer.parseInt(nums.substring(index1));
+                if (num1 < 0) {negatives = negatives + Integer.parseInt(nums.substring(index1));}
+                if (!negatives.isEmpty()) { throw new NegativeException(negatives);}
                 sum = sum + num1;
             }
         }
@@ -56,7 +66,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        String numbers = "//swanky\\n1swanky2swanky3swanky4";
+        String numbers = "1,-2,3,-4\\n-5";
         System.out.print(Add(numbers));
     }
 }
