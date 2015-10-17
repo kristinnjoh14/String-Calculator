@@ -6,12 +6,14 @@ import java.util.IntSummaryStatistics;
 
 public class Main {
 
+    //exception to be thrown at users that input negative numbers
     public static class NegativeException extends RuntimeException {
         public NegativeException(String negatives) {
             super("Negatives not allowed: " + negatives);
         }
     }
 
+    //data type containing bool and string made so checkDelimiter can return two values
     public static class delimBoolLength {
         public boolean bool;
         public String delim;
@@ -21,13 +23,17 @@ public class Main {
         }
     }
 
+    //checks all delimiters against the number string
+    //try/catch is necessary because the order of actions in the loop
+    //makes it always throw an exception on the last number
     public static delimBoolLength checkDelimiter(String string, String delimiter) {
         StringBuffer delim = new StringBuffer(delimiter);
         while (delim.toString().contains("]")) {
             int index = delim.toString().indexOf(']');
             try { String test = string.split("\\d")[1]; }
-            catch (ArrayIndexOutOfBoundsException aie) { return new delimBoolLength(false, null); }
-            if(string.split("\\d|-\\d")[1].contentEquals(delim.substring(0, index))) {
+            catch (ArrayIndexOutOfBoundsException aie) { return new delimBoolLength(false, null);
+            }
+            if (string.split("\\d|-\\d")[1].contentEquals(delim.substring(0, index))) {
             return new delimBoolLength(true, delim.toString().substring(0, index));
             }
             delim.delete(0, index + 2);
@@ -35,6 +41,9 @@ public class Main {
         return new delimBoolLength(false, null);
     }
 
+    //Deleting from the input string may be more computationally taxing in hindsight...
+    //In earlier versions instead of deleting I would simply set a second index
+    //at the beginning of the next string to be computed rather than delete up tp that point
     public static int Add(String numbers) throws NegativeException {
         StringBuffer nums = new StringBuffer(numbers);
         int sum = 0;
@@ -79,6 +88,7 @@ public class Main {
         return sum;
     }
 
+    //runs Add(numbers)
     public static void main(String[] args) {
         String numbers = "//[swanky][cool]\\n1swanky2cool3swanky4cool5,6\\n7";
         System.out.print(Add(numbers));
